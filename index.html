@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquid Glass — UI Kit</title>
+<style>
+  :root {
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.18);
+    --glass-shadow: rgba(0,0,0,0.4);
+    --blur: 24px;
+    --accent1: #a78bfa;
+    --accent2: #60a5fa;
+    --accent3: #f472b6;
+    --accent4: #34d399;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #060610;
+    color: #fff;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ─── CANVAS BACKGROUND ─── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+  }
+
+  /* ─── LAYOUT ─── */
+  .wrap { position: relative; z-index: 2; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(6,6,16,0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .nav-logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .nav-links { display: flex; gap: 8px; }
+  .nav-links a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    transition: all 0.25s;
+  }
+  .nav-links a:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+  }
+  .nav-cta {
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(167,139,250,0.35);
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(167,139,250,0.5); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 20px 80px;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px 6px 8px;
+    border-radius: 100px;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.3);
+    font-size: 13px;
+    color: var(--accent1);
+    margin-bottom: 32px;
+    backdrop-filter: blur(12px);
+    animation: fadeSlideUp 0.8s ease both;
+  }
+  .badge-dot {
+    width: 8px; height: 8px;
+    background: var(--accent1);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .hero h1 {
+    font-size: clamp(52px, 8vw, 120px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 0.95;
+    margin-bottom: 28px;
+    animation: fadeSlideUp 0.8s 0.1s ease both;
+  }
+  .hero h1 .line1 {
+    display: block;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.75) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero h1 .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent3) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradShift 4s ease infinite, fadeSlideUp 0.8s 0.2s ease both;
+  }
+
+  @keyframes gradShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .hero p {
+    font-size: clamp(16px, 2vw, 20px);
+    color: rgba(255,255,255,0.5);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    animation: fadeSlideUp 0.8s 0.3s ease both;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeSlideUp 0.8s 0.4s ease both;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── GLASS BUTTON ─── */
+  .btn-glass {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, rgba(167,139,250,0.9) 0%, rgba(96,165,250,0.9) 100%);
+    color: #fff;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.15) inset,
+      0 -2px 0 rgba(0,0,0,0.2) inset,
+      0 8px 32px rgba(167,139,250,0.4),
+      0 2px 8px rgba(0,0,0,0.3);
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+    border-radius: 100px 100px 0 0;
+    pointer-events: none;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.15) inset, 0 -2px 0 rgba(0,0,0,0.2) inset, 0 16px 48px rgba(167,139,250,0.6), 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+
+  .btn-ghost {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--glass-border);
+    color: rgba(255,255,255,0.8);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.05) inset, 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .btn-ghost::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent);
+    border-radius: 100px 100px 0 0;
+    pointer-events: none;
+  }
+  .btn-ghost:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.08) inset, 0 12px 32px rgba(0,0,0,0.3);
+  }
+
+  /* ─── SECTION COMMONS ─── */
+  section { padding: 120px 20px; }
+  .section-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  .section-title {
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.65) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+  }
+  .section-sub {
+    font-size: 18px;
+    color: rgba(255,255,255,0.45);
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 64px;
+  }
+  .center { text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+  /* ─── MARQUEE ─── */
+  .marquee-wrap {
+    overflow: hidden;
+    padding: 40px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    margin: 0;
+  }
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    animation: marquee 25s linear infinite;
+    width: max-content;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+  }
+  .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent1); flex-shrink: 0; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── COMPONENTS SECTION ─── */
+  #components { padding: 120px 40px; }
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ─── GLASS CARD ─── */
+  .glass-card {
+    position: relative;
+    border-radius: 28px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    padding: 36px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.23,1,0.32,1);
+    cursor: default;
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  }
+  .glass-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% -20%, rgba(255,255,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 28px;
+  }
+  .glass-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.28);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+  }
+
+  /* card variants */
+  .card-violet { --card-glow: rgba(167,139,250,0.15); }
+  .card-violet::after { background: radial-gradient(ellipse at 50% -20%, var(--card-glow) 0%, transparent 70%); }
+  .card-violet:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(167,139,250,0.12); }
+
+  .card-blue { --card-glow: rgba(96,165,250,0.15); }
+  .card-blue::after { background: radial-gradient(ellipse at 50% -20%, var(--card-glow) 0%, transparent 70%); }
+  .card-blue:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(96,165,250,0.12); }
+
+  .card-pink { --card-glow: rgba(244,114,182,0.15); }
+  .card-pink::after { background: radial-gradient(ellipse at 50% -20%, var(--card-glow) 0%, transparent 70%); }
+  .card-pink:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(244,114,182,0.12); }
+
+  .card-green { --card-glow: rgba(52,211,153,0.15); }
+  .card-green::after { background: radial-gradient(ellipse at 50% -20%, var(--card-glow) 0%, transparent 70%); }
+  .card-green:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(52,211,153,0.12); }
+
+  .card-wide { grid-column: span 2; }
+
+  .card-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .icon-violet { background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.25); }
+  .icon-blue { background: rgba(96,165,250,0.15); border: 1px solid rgba(96,165,250,0.25); }
+  .icon-pink { background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.25); }
+  .icon-green { background: rgba(52,211,153,0.15); border: 1px solid rgba(52,211,153,0.25); }
+  .icon-orange { background: rgba(251,146,60,0.15); border: 1px solid rgba(251,146,60,0.25); }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  .card-desc {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+  }
+
+  /* ─── INTERACTIVE BUTTONS DEMO ─── */
+  .btns-demo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .lg-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    color: #fff;
+  }
+  .lg-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent);
+    border-radius: 100px 100px 0 0;
+    pointer-events: none;
+  }
+  .lg-btn:hover { transform: translateY(-2px) scale(1.03); }
+  .lg-btn:active { transform: scale(0.97); }
+
+  .lg-btn-dark {
+    background: linear-gradient(180deg, #2a2a3a 0%, #1a1a28 100%);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.08) inset, 0 -2px 0 rgba(0,0,0,0.3) inset, 0 4px 20px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .lg-btn-dark:hover { box-shadow: 0 2px 0 rgba(255,255,255,0.1) inset, 0 -2px 0 rgba(0,0,0,0.3) inset, 0 8px 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1); }
+
+  .lg-btn-violet {
+    background: linear-gradient(135deg, rgba(167,139,250,0.85) 0%, rgba(139,92,246,0.85) 100%);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.2) inset, 0 -2px 0 rgba(0,0,0,0.2) inset, 0 6px 24px rgba(139,92,246,0.5), 0 0 0 1px rgba(167,139,250,0.3);
+    backdrop-filter: blur(8px);
+  }
+  .lg-btn-violet:hover { box-shadow: 0 2px 0 rgba(255,255,255,0.2) inset, 0 -2px 0 rgba(0,0,0,0.2) inset, 0 12px 40px rgba(139,92,246,0.7), 0 0 0 1px rgba(167,139,250,0.5); }
+
+  .lg-btn-iridescent {
+    background: linear-gradient(135deg, rgba(244,114,182,0.8) 0%, rgba(167,139,250,0.8) 35%, rgba(96,165,250,0.8) 70%, rgba(52,211,153,0.8) 100%);
+    background-size: 200% 200%;
+    animation: iridescent 3s ease infinite;
+    box-shadow: 0 2px 0 rgba(255,255,255,0.2) inset, 0 6px 24px rgba(167,139,250,0.4);
+  }
+  @keyframes iridescent {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .lg-btn-iridescent:hover { box-shadow: 0 2px 0 rgba(255,255,255,0.2) inset, 0 12px 40px rgba(167,139,250,0.6); }
+
+  .lg-btn-ghost {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 2px 0 rgba(255,255,255,0.05) inset;
+    color: rgba(255,255,255,0.75);
+  }
+  .lg-btn-ghost:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.22); color: #fff; }
+
+  /* ─── TOGGLE ─── */
+  .toggle-demo {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .toggle-label { font-size: 14px; color: rgba(255,255,255,0.6); }
+  .toggle {
+    width: 52px; height: 28px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    backdrop-filter: blur(8px);
+  }
+  .toggle.on {
+    background: linear-gradient(135deg, rgba(139,92,246,0.7), rgba(96,165,250,0.7));
+    border-color: rgba(167,139,250,0.4);
+    box-shadow: 0 0 20px rgba(139,92,246,0.4);
+  }
+  .toggle-knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+  }
+  .toggle.on .toggle-knob { left: 27px; }
+
+  /* ─── INPUT ─── */
+  .input-demo { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .glass-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .glass-input {
+    width: 100%;
+    padding: 12px 44px 12px 16px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s;
+    box-shadow: 0 2px 0 rgba(255,255,255,0.04) inset;
+    font-family: inherit;
+  }
+  .glass-input::placeholder { color: rgba(255,255,255,0.3); }
+  .glass-input:focus {
+    border-color: rgba(167,139,250,0.5);
+    background: rgba(255,255,255,0.09);
+    box-shadow: 0 0 0 3px rgba(167,139,250,0.12), 0 2px 0 rgba(255,255,255,0.04) inset;
+  }
+  .input-icon {
+    position: absolute;
+    right: 14px;
+    color: rgba(255,255,255,0.35);
+    font-size: 16px;
+    pointer-events: none;
+  }
+
+  /* ─── SLIDER ─── */
+  .slider-demo { margin-top: 24px; }
+  .glass-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.1);
+    outline: none;
+    margin-bottom: 16px;
+  }
+  .glass-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(139,92,246,0.6), 0 0 0 3px rgba(139,92,246,0.2);
+    transition: all 0.2s;
+  }
+  .glass-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+  /* ─── PROGRESS ─── */
+  .progress-demo { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .progress-item {}
+  .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: rgba(255,255,255,0.55); }
+  .progress-track {
+    height: 6px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 100px;
+    animation: fillBar 1.5s cubic-bezier(0.23,1,0.32,1) both;
+    animation-delay: 0.3s;
+  }
+  @keyframes fillBar {
+    from { width: 0; }
+  }
+  .fill-violet { background: linear-gradient(90deg, var(--accent1), rgba(167,139,250,0.6)); width: 78%; }
+  .fill-blue { background: linear-gradient(90deg, var(--accent2), rgba(96,165,250,0.6)); width: 62%; }
+  .fill-pink { background: linear-gradient(90deg, var(--accent3), rgba(244,114,182,0.6)); width: 89%; }
+  .fill-green { background: linear-gradient(90deg, var(--accent4), rgba(52,211,153,0.6)); width: 45%; }
+
+  /* ─── NOTIFICATION CARD ─── */
+  .notif-demo { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .notif {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(16px);
+    transition: all 0.3s;
+  }
+  .notif:hover { background: rgba(255,255,255,0.08); transform: translateX(4px); }
+  .notif-avatar {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .notif-body { flex: 1; }
+  .notif-title { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+  .notif-text { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .notif-time { font-size: 12px; color: rgba(255,255,255,0.25); white-space: nowrap; }
+
+  /* ─── STATS ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .stat-item {
+    padding: 20px 16px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .stat-item:hover { background: rgba(255,255,255,0.07); transform: translateY(-2px); }
+  .stat-number {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+  /* ─── COLORFUL BUTTONS SHOWCASE ─── */
+  .color-btns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .color-btn {
+    padding: 14px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .color-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
+    border-radius: 18px 18px 0 0;
+  }
+  .color-btn:hover { transform: translateY(-3px) scale(1.02); }
+  .color-btn:active { transform: scale(0.97); }
+
+  .cb-dark { background: linear-gradient(160deg, #1c1c2e 0%, #0f0f1a 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06); }
+  .cb-violet { background: linear-gradient(160deg, rgba(109,40,217,0.9) 0%, rgba(76,29,149,0.9) 100%); box-shadow: 0 4px 20px rgba(109,40,217,0.5); backdrop-filter: blur(8px); }
+  .cb-irid {
+    background: linear-gradient(160deg, rgba(244,114,182,0.85) 0%, rgba(167,139,250,0.85) 50%, rgba(96,165,250,0.85) 100%);
+    background-size: 200% 200%;
+    animation: iridescent 3s ease infinite;
+    box-shadow: 0 4px 20px rgba(167,139,250,0.4);
+  }
+  .cb-glass { background: rgba(255,255,255,0.07); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 0 rgba(255,255,255,0.05) inset; }
+
+  /* ─── CURSOR GLOW ─── */
+  .cursor-glow {
+    position: fixed;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: left 0.1s, top 0.1s;
+  }
+
+  /* ─── FEATURES SECTION ─── */
+  #features {
+    padding: 120px 40px;
+    background: linear-gradient(180deg, transparent 0%, rgba(139,92,246,0.03) 50%, transparent 100%);
+  }
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .feature-item {
+    padding: 40px 36px;
+    background: rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.4s;
+    cursor: default;
+  }
+  .feature-item:hover { background: rgba(255,255,255,0.06); }
+  .feature-num { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.2); letter-spacing: 2px; margin-bottom: 20px; }
+  .feature-title { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 12px; letter-spacing: -0.3px; }
+  .feature-desc { font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.7; }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    padding: 120px 40px;
+    text-align: center;
+    position: relative;
+  }
+  .cta-card {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 80px 60px;
+    border-radius: 40px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(40px);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(167,139,250,0.6), transparent);
+  }
+  .cta-glow {
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-title {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+  }
+  .cta-desc { font-size: 17px; color: rgba(255,255,255,0.45); margin-bottom: 48px; line-height: 1.6; }
+  .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 40px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-logo {
+    font-size: 18px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .footer-copy { font-size: 13px; color: rgba(255,255,255,0.25); }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.23,1,0.32,1), transform 0.8s cubic-bezier(0.23,1,0.32,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* ─── TABS DEMO ─── */
+  .tabs-demo { margin-top: 24px; }
+  .tabs-nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: inherit;
+  }
+  .tab-btn.active {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .tab-content { display: none; font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.6; }
+  .tab-content.active { display: block; }
+
+  /* ─── AVATAR STACK ─── */
+  .avatar-stack {
+    display: flex;
+    align-items: center;
+    margin-top: 24px;
+    gap: 12px;
+  }
+  .avatars { display: flex; }
+  .avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 2px solid #060610;
+    margin-left: -10px;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08);
+  }
+  .avatars .avatar:first-child { margin-left: 0; }
+  .avatar-text { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    #components { padding: 80px 20px; }
+    .components-grid { grid-template-columns: 1fr; }
+    .card-wide { grid-column: span 1; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .color-btns { grid-template-columns: repeat(2, 1fr); }
+    footer { flex-direction: column; text-align: center; }
+    .cta-card { padding: 50px 28px; }
+    #features { padding: 80px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<div class="wrap">
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">liquid glass</div>
+  <div class="nav-links">
+    <a href="#components">Components</a>
+    <a href="#features">Features</a>
+    <a href="#cta">Get Kit</a>
+  </div>
+  <button class="nav-cta">Get Started →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Liquid Glass UI Kit v2.0
+  </div>
+  <h1>
+    <span class="line1">Design beyond</span>
+    <span class="line2">glass.</span>
+  </h1>
+  <p>The most advanced liquid glass component library. Iridescent, alive, and impossibly beautiful.</p>
+  <div class="hero-buttons">
+    <a class="btn-glass btn-primary" href="#components">Explore components</a>
+    <a class="btn-glass btn-ghost" href="#cta">View on GitHub ↗</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item"><span class="marquee-dot"></span>Buttons</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Toggles</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent3)"></span>Inputs</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent4)"></span>Cards</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Sliders</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Tabs</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent3)"></span>Notifications</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent4)"></span>Progress</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Stats</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Avatars</span>
+    <!-- duplicate for seamless -->
+    <span class="marquee-item"><span class="marquee-dot"></span>Buttons</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Toggles</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent3)"></span>Inputs</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent4)"></span>Cards</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Sliders</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Tabs</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent3)"></span>Notifications</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent4)"></span>Progress</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Stats</span>
+    <span class="marquee-item"><span class="marquee-dot" style="background:var(--accent2)"></span>Avatars</span>
+  </div>
+</div>
+
+<!-- COMPONENTS -->
+<section id="components">
+  <div class="center reveal">
+    <span class="section-label">Components</span>
+    <h2 class="section-title">Every piece, perfected.</h2>
+    <p class="section-sub">Interactive glass components that react to light, touch, and motion.</p>
+  </div>
+
+  <div class="components-grid">
+
+    <!-- BUTTONS -->
+    <div class="glass-card card-violet reveal reveal-delay-1">
+      <div class="card-icon icon-violet">✦</div>
+      <div class="card-title">Buttons</div>
+      <div class="card-desc">Four distinct glass button styles with real-time iridescent shift and depth shadows.</div>
+      <div class="btns-demo">
+        <button class="lg-btn lg-btn-dark">Start project</button>
+        <button class="lg-btn lg-btn-violet">Primary</button>
+        <button class="lg-btn lg-btn-iridescent">Iridescent</button>
+        <button class="lg-btn lg-btn-ghost">Secondary</button>
+      </div>
+    </div>
+
+    <!-- TOGGLES -->
+    <div class="glass-card card-blue reveal reveal-delay-2">
+      <div class="card-icon icon-blue">⟳</div>
+      <div class="card-title">Switches</div>
+      <div class="card-desc">Smooth glass toggles with glowing active states and spring physics.</div>
+      <div class="toggle-demo">
+        <div class="toggle-row">
+          <span class="toggle-label">Dark Mode</span>
+          <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Notifications</span>
+          <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Auto-sync</span>
+          <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">AI Suggestions</span>
+          <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUTS -->
+    <div class="glass-card card-pink reveal reveal-delay-1">
+      <div class="card-icon icon-pink">⌨</div>
+      <div class="card-title">Inputs</div>
+      <div class="card-desc">Frosted text fields with focus glow, inner shadow depth, and smooth transitions.</div>
+      <div class="input-demo">
+        <div class="glass-input-wrap">
+          <input class="glass-input" type="text" placeholder="Search components...">
+          <span class="input-icon">🔍</span>
+        </div>
+        <div class="glass-input-wrap">
+          <input class="glass-input" type="email" placeholder="your@email.com">
+          <span class="input-icon">✉</span>
+        </div>
+        <div class="glass-input-wrap">
+          <input class="glass-input" type="password" placeholder="Password">
+          <span class="input-icon">🔒</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="glass-card card-green reveal reveal-delay-2">
+      <div class="card-icon icon-green">◎</div>
+      <div class="card-title">Progress</div>
+      <div class="card-desc">Animated glass progress bars with gradient fills and smooth entry animations.</div>
+      <div class="progress-demo">
+        <div class="progress-item">
+          <div class="progress-header"><span>Design System</span><span>78%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-violet"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header"><span>Frontend</span><span>62%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-blue"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header"><span>Visual Quality</span><span>89%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-pink"></div></div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-header"><span>Performance</span><span>45%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-green"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="glass-card card-violet reveal reveal-delay-1">
+      <div class="card-icon icon-orange">🔔</div>
+      <div class="card-title">Notifications</div>
+      <div class="card-desc">Glass notification rows that slide on hover with avatar and timestamp.</div>
+      <div class="notif-demo">
+        <div class="notif">
+          <div class="notif-avatar" style="background:rgba(139,92,246,0.2)">🚀</div>
+          <div class="notif-body">
+            <div class="notif-title">Deploy successful</div>
+            <div class="notif-text">v2.4.1 is live on production</div>
+          </div>
+          <div class="notif-time">2m</div>
+        </div>
+        <div class="notif">
+          <div class="notif-avatar" style="background:rgba(96,165,250,0.2)">💬</div>
+          <div class="notif-body">
+            <div class="notif-title">New comment</div>
+            <div class="notif-text">Alex left feedback on your PR</div>
+          </div>
+          <div class="notif-time">8m</div>
+        </div>
+        <div class="notif">
+          <div class="notif-avatar" style="background:rgba(52,211,153,0.2)">✅</div>
+          <div class="notif-body">
+            <div class="notif-title">Tests passed</div>
+            <div class="notif-text">All 148 tests green</div>
+          </div>
+          <div class="notif-time">15m</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="glass-card card-blue reveal reveal-delay-2">
+      <div class="card-icon icon-blue">⊞</div>
+      <div class="card-title">Tabs</div>
+      <div class="card-desc">Glass segmented control with smooth active state transitions.</div>
+      <div class="tabs-demo">
+        <div class="tabs-nav">
+          <button class="tab-btn active" onclick="switchTab(this,'overview')">Overview</button>
+          <button class="tab-btn" onclick="switchTab(this,'analytics')">Analytics</button>
+          <button class="tab-btn" onclick="switchTab(this,'settings')">Settings</button>
+        </div>
+        <div id="overview" class="tab-content active">Real-time overview of your glass components with live metrics and interactive previews.</div>
+        <div id="analytics" class="tab-content">Deep analytics with engagement heatmaps, interaction rates, and component performance data.</div>
+        <div id="settings" class="tab-content">Customize blur intensity, border opacity, glow radius, and iridescent color palette.</div>
+      </div>
+      <div class="avatar-stack">
+        <div class="avatars">
+          <div class="avatar">😎</div>
+          <div class="avatar">🧑</div>
+          <div class="avatar">👩</div>
+          <div class="avatar">🦊</div>
+        </div>
+        <span class="avatar-text">+2.4k developers using this</span>
+      </div>
+    </div>
+
+    <!-- SLIDER + STATS wide -->
+    <div class="glass-card card-pink card-wide reveal">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start">
+        <div>
+          <div class="card-icon icon-pink">⧉</div>
+          <div class="card-title">Sliders</div>
+          <div class="card-desc">Glass range inputs with gradient thumb and smooth track fill.</div>
+          <div class="slider-demo">
+            <input class="glass-slider" type="range" value="65" style="accent-color:var(--accent1)">
+            <input class="glass-slider" type="range" value="40" style="accent-color:var(--accent2)">
+            <input class="glass-slider" type="range" value="80" style="accent-color:var(--accent3)">
+          </div>
+        </div>
+        <div>
+          <div class="card-icon icon-violet">◈</div>
+          <div class="card-title">Stats</div>
+          <div class="card-desc">Gradient number cards for dashboards and analytics widgets.</div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-number">48k</div>
+              <div class="stat-label">Downloads</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" style="background:linear-gradient(135deg,var(--accent2),var(--accent4));-webkit-background-clip:text;-webkit-text-fill-color:transparent">99%</div>
+              <div class="stat-label">Satisfaction</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" style="background:linear-gradient(135deg,var(--accent3),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent">64</div>
+              <div class="stat-label">Components</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLOR BUTTONS -->
+    <div class="glass-card card-green reveal reveal-delay-1">
+      <div class="card-icon icon-green">◐</div>
+      <div class="card-title">Glass Variants</div>
+      <div class="card-desc">Every surface refracted differently — dark, tinted, iridescent, pure glass.</div>
+      <div class="color-btns">
+        <button class="color-btn cb-dark">Dark Glass</button>
+        <button class="color-btn cb-violet">Deep Violet</button>
+        <button class="color-btn cb-irid">Iridescent</button>
+        <button class="color-btn cb-glass">Pure Glass</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="center reveal" style="max-width:1200px;margin:0 auto 64px">
+    <span class="section-label">Why Liquid Glass</span>
+    <h2 class="section-title">Built different.</h2>
+    <p class="section-sub">Not just CSS tricks. Real physics, real depth, real beauty.</p>
+  </div>
+  <div class="features-list reveal">
+    <div class="feature-item">
+      <div class="feature-num">01</div>
+      <div class="feature-title">Real Refraction</div>
+      <div class="feature-desc">Backdrop filters, inner shadows, and highlight layers simulate actual glass optics — not flat translucency.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">02</div>
+      <div class="feature-title">Iridescent Color</div>
+      <div class="feature-desc">Animated gradient backgrounds shift in hue as you interact, mimicking thin-film light interference.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">03</div>
+      <div class="feature-title">Spring Physics</div>
+      <div class="feature-desc">Every transition uses cubic-bezier spring curves for that satisfying over-shoot-and-settle feel.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">04</div>
+      <div class="feature-title">Zero Dependencies</div>
+      <div class="feature-desc">Pure CSS & vanilla JS. No frameworks, no bloat. Drop it in any stack and it just works.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">05</div>
+      <div class="feature-title">Dark & Light</div>
+      <div class="feature-desc">Every component adapts to both themes automatically via CSS custom properties.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-num">06</div>
+      <div class="feature-title">Fully Accessible</div>
+      <div class="feature-desc">WCAG 2.1 AA compliant contrast ratios. Focus states. Keyboard navigable. Screen reader friendly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-card reveal">
+    <div class="cta-glow"></div>
+    <h2 class="cta-title">Start building beautiful.</h2>
+    <p class="cta-desc">Open source, free forever. Clone the repo, drop in the components, ship something stunning.</p>
+    <div class="cta-btns">
+      <a class="btn-glass btn-primary" href="#" onclick="alert('Star it on GitHub! ⭐')">Star on GitHub ⭐</a>
+      <a class="btn-glass btn-ghost" href="#components">View Components</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">liquid glass</div>
+  <div class="footer-copy">Open source · MIT License · Made with obsession</div>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+// ─── CANVAS BACKGROUND: animated orbs ───
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const orbs = [
+  { x: 0.2, y: 0.3, r: 0.35, color: [139, 92, 246], speed: 0.0003, phase: 0 },
+  { x: 0.8, y: 0.2, r: 0.30, color: [96, 165, 250], speed: 0.0004, phase: 2 },
+  { x: 0.5, y: 0.8, r: 0.40, color: [244, 114, 182], speed: 0.00025, phase: 4 },
+  { x: 0.1, y: 0.7, r: 0.25, color: [52, 211, 153], speed: 0.0005, phase: 1 },
+  { x: 0.9, y: 0.6, r: 0.28, color: [251, 146, 60], speed: 0.00035, phase: 3 },
+];
+
+let t = 0;
+function drawBg() {
+  t += 16;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (const orb of orbs) {
+    const x = (orb.x + Math.sin(t * orb.speed + orb.phase) * 0.12) * canvas.width;
+    const y = (orb.y + Math.cos(t * orb.speed * 0.7 + orb.phase) * 0.1) * canvas.height;
+    const r = orb.r * Math.min(canvas.width, canvas.height);
+
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, `rgba(${orb.color.join(',')}, 0.18)`);
+    grad.addColorStop(0.5, `rgba(${orb.color.join(',')}, 0.06)`);
+    grad.addColorStop(1, `rgba(${orb.color.join(',')}, 0)`);
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+// ─── CURSOR GLOW ───
+const cursorGlow = document.getElementById('cursorGlow');
+let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+let cx = mx, cy = my;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+});
+
+function animateCursor() {
+  cx += (mx - cx) * 0.08;
+  cy += (my - cy) * 0.08;
+  cursorGlow.style.left = cx + 'px';
+  cursorGlow.style.top = cy + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ─── TABS ───
+function switchTab(btn, id) {
+  btn.closest('.tabs-demo').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.closest('.tabs-demo').querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// ─── SCROLL REVEAL ───
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+// ─── BUTTON RIPPLE ───
+document.querySelectorAll('.lg-btn, .color-btn, .btn-glass').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const r = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    r.style.cssText = `
+      position:absolute;
+      border-radius:50%;
+      background:rgba(255,255,255,0.25);
+      pointer-events:none;
+      width:4px;height:4px;
+      left:${e.clientX - rect.left}px;
+      top:${e.clientY - rect.top}px;
+      transform:scale(0);
+      animation:ripple 0.5s ease-out forwards;
+    `;
+    this.appendChild(r);
+    setTimeout(() => r.remove(), 500);
+  });
+});
+
+// ripple keyframe
+const style = document.createElement('style');
+style.textContent = '@keyframes ripple { to { transform: scale(80); opacity: 0; } }';
+document.head.appendChild(style);
+
+// ─── CARD TILT ───
+document.querySelectorAll('.glass-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `translateY(-4px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+    card.style.transition = 'transform 0.1s';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1)';
+  });
+});
+</script>
+</body>
+</html>
