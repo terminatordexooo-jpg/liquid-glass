@@ -256,6 +256,18 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
 .glass-card:hover{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.07);transform:translateY(-4px)}
 
+/* ─── GLASS FLOWER SECTION ─── */
+.flower-sec{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;align-items:center;background:linear-gradient(145deg,#E2DFEE 0%,#E8EAF6 40%,#DDE4EF 100%);padding:100px 56px;gap:60px;position:relative;z-index:2;overflow:hidden}
+.flower-txt{max-width:480px}
+.flower-h{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(44px,5vw,76px);letter-spacing:-3px;line-height:.95;color:#08081A;margin-bottom:20px}
+.flower-h em{font-style:italic;background:linear-gradient(135deg,#7c3aed,#2563eb);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.flower-p{font-size:16px;color:rgba(8,8,26,.5);line-height:1.75;max-width:380px;margin-bottom:40px}
+.btn-dark{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:#08081A;color:#fff;font-size:14px;font-weight:600;border-radius:100px;text-decoration:none;cursor:none;transition:all .25s;font-family:'Inter',sans-serif}
+.btn-dark:hover{background:#1a1a3a;transform:translateY(-1px);box-shadow:0 8px 28px rgba(8,8,26,.2)}
+.flower-visual{display:flex;align-items:center;justify-content:center}
+#fc{display:block;width:100%;max-width:440px}
+@media(max-width:900px){.flower-sec{grid-template-columns:1fr;padding:80px 24px;gap:40px}.flower-txt{max-width:100%}}
+
 /* ─── REVEAL ─── */
 .rv{opacity:0;transform:translateY(40px);transition:opacity .85s cubic-bezier(.23,1,.32,1),transform .85s cubic-bezier(.23,1,.32,1)}
 .rv.in{opacity:1;transform:none}
@@ -346,6 +358,19 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <span class="ti"><span class="ti-star">✦</span>Product Design</span>
   </div>
 </div>
+
+<!-- GLASS FLOWER -->
+<section class="flower-sec">
+  <div class="flower-txt rv">
+    <div class="s-ey" style="color:#5b21b6">Our Philosophy</div>
+    <h2 class="flower-h">Built like<br><em>crystal.</em></h2>
+    <p class="flower-p">Every project we touch is crafted with the patience of a glassblower and the precision of a watchmaker. Beauty isn't decoration — it's function.</p>
+    <a class="btn-dark" href="#contact">Work with us →</a>
+  </div>
+  <div class="flower-visual rv rv1">
+    <canvas id="fc"></canvas>
+  </div>
+</section>
 
 <!-- WORK -->
 <section class="section" id="work">
@@ -607,6 +632,199 @@ document.addEventListener('mousemove',e=>{
   gsap.to('.orb3',{x:x*.4,y:-y*.4,duration:1.8,ease:'power2.out'});
   gsap.to('.hero h1',{x:x*.08,y:y*.05,duration:1.2,ease:'power2.out'});
 });
+
+// ─── GLASS FLOWER CANVAS ─────────────────────────────────────────────────────
+(function(){
+  const cv=document.getElementById('fc');
+  if(!cv)return;
+  const W=440,H=480;
+  cv.width=W*2;cv.height=H*2;
+  cv.style.width=W+'px';cv.style.height=H+'px';
+  const g=cv.getContext('2d');
+  g.scale(2,2);
+  const cx=W/2,cy=H/2+30;
+  let t=0;
+
+  /* thin-film palette — cycles through violet→cyan→rose */
+  function filmColor(phase,a){
+    const r=Math.sin(phase)*127+128;
+    const gr=Math.sin(phase+2.1)*127+128;
+    const b=Math.sin(phase+4.2)*127+128;
+    return `rgba(${r|0},${gr|0},${b|0},${a})`;
+  }
+
+  function drawStem(breath){
+    const sx=cx, sy=cy+40, ey=cy+195;
+    const g1=g.createLinearGradient(sx-6,sy,sx+10,ey);
+    g1.addColorStop(0,'rgba(180,220,255,0.55)');
+    g1.addColorStop(0.3,'rgba(255,255,255,0.85)');
+    g1.addColorStop(0.6,'rgba(160,200,240,0.4)');
+    g1.addColorStop(1,'rgba(120,170,210,0.3)');
+    g.beginPath();
+    g.moveTo(sx,sy);
+    g.bezierCurveTo(sx+8+breath*2,sy+60,sx-5,sy+120,sx+3,ey);
+    g.lineWidth=10;g.strokeStyle=g1;g.lineCap='round';g.stroke();
+    /* shine line */
+    const g2=g.createLinearGradient(sx-5,sy,sx+2,ey);
+    g2.addColorStop(0,'rgba(255,255,255,0.6)');
+    g2.addColorStop(1,'rgba(255,255,255,0)');
+    g.beginPath();
+    g.moveTo(sx-2,sy);
+    g.bezierCurveTo(sx+4+breath,sy+60,sx-3,sy+120,sx+1,ey);
+    g.lineWidth=3;g.strokeStyle=g2;g.stroke();
+  }
+
+  function drawLeaf(ox,oy,ang,breath){
+    g.save();g.translate(ox,oy);g.rotate(ang+breath*0.04);
+    const lg=g.createLinearGradient(-20,0,40,0);
+    lg.addColorStop(0,'rgba(160,220,200,0.15)');
+    lg.addColorStop(0.35,'rgba(200,255,240,0.55)');
+    lg.addColorStop(0.65,'rgba(255,255,255,0.75)');
+    lg.addColorStop(1,'rgba(140,200,180,0.1)');
+    g.beginPath();
+    g.moveTo(0,0);
+    g.bezierCurveTo(10,-18,38,-14,42,0);
+    g.bezierCurveTo(38,14,10,18,0,0);
+    g.fillStyle=lg;g.fill();
+    /* leaf vein */
+    g.beginPath();g.moveTo(2,0);g.lineTo(36,0);
+    g.strokeStyle='rgba(255,255,255,0.45)';g.lineWidth=1;g.stroke();
+    g.restore();
+  }
+
+  function drawPetal(angle,len,phase,breath){
+    g.save();
+    g.translate(cx,cy);
+    g.rotate(angle+breath*0.02);
+    const tipX=0,tipY=-(len+breath*1.5);
+    /* outer petal shape */
+    const hw=len*0.42;
+    g.beginPath();
+    g.moveTo(0,0);
+    g.bezierCurveTo(-hw,-len*0.35, -hw*1.1,-len*0.75, tipX*0.1,tipY);
+    g.bezierCurveTo(hw*1.1,-len*0.75, hw,-len*0.35, 0,0);
+    g.closePath();
+
+    /* glass gradient — base */
+    const grad=g.createLinearGradient(0,0,tipX,tipY);
+    grad.addColorStop(0,'rgba(255,255,255,0.08)');
+    grad.addColorStop(0.2,filmColor(phase,0.22));
+    grad.addColorStop(0.5,'rgba(255,255,255,0.5)');
+    grad.addColorStop(0.75,filmColor(phase+1.5,0.18));
+    grad.addColorStop(1,'rgba(255,255,255,0.05)');
+    g.fillStyle=grad;g.fill();
+
+    /* petal rim glow */
+    g.strokeStyle=filmColor(phase,0.6);
+    g.lineWidth=1.2;g.stroke();
+
+    /* specular highlight — upper left of petal */
+    g.save();
+    g.clip();
+    const sp=g.createRadialGradient(-hw*0.3,-len*0.55,0,-hw*0.3,-len*0.55,len*0.32);
+    sp.addColorStop(0,'rgba(255,255,255,0.75)');
+    sp.addColorStop(0.4,'rgba(255,255,255,0.18)');
+    sp.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle=sp;g.fill();
+    g.restore();
+
+    /* inner thin-film stripe */
+    g.beginPath();
+    g.moveTo(0,-len*0.12);
+    g.bezierCurveTo(-hw*0.5,-len*0.45,-hw*0.5,-len*0.7,tipX*0.05,tipY*0.88);
+    g.bezierCurveTo(hw*0.5,-len*0.7,hw*0.5,-len*0.45,0,-len*0.12);
+    g.fillStyle=filmColor(phase+0.8,0.12);g.fill();
+
+    g.restore();
+  }
+
+  function drawDroplet(dx,dy,r,opacity){
+    const gr=g.createRadialGradient(dx-r*0.3,dy-r*0.3,r*0.05,dx,dy,r);
+    gr.addColorStop(0,'rgba(255,255,255,0.9)');
+    gr.addColorStop(0.25,'rgba(200,230,255,0.5)');
+    gr.addColorStop(0.7,'rgba(160,200,240,0.15)');
+    gr.addColorStop(1,'rgba(120,180,220,0.05)');
+    g.beginPath();g.arc(dx,dy,r,0,Math.PI*2);
+    g.fillStyle=gr;g.globalAlpha=opacity;g.fill();
+    g.strokeStyle='rgba(255,255,255,0.45)';g.lineWidth=0.5;g.stroke();
+    g.globalAlpha=1;
+  }
+
+  function drawCenter(breath){
+    const cr=24+breath*0.4;
+    /* outer glow ring */
+    const rg=g.createRadialGradient(cx,cy,cr*0.3,cx,cy,cr*1.8);
+    rg.addColorStop(0,'rgba(180,140,255,0.25)');
+    rg.addColorStop(1,'rgba(180,140,255,0)');
+    g.beginPath();g.arc(cx,cy,cr*1.8,0,Math.PI*2);
+    g.fillStyle=rg;g.fill();
+    /* glass dome */
+    const dg=g.createRadialGradient(cx-cr*0.3,cy-cr*0.35,cr*0.05,cx,cy,cr);
+    dg.addColorStop(0,'rgba(255,255,255,0.95)');
+    dg.addColorStop(0.3,'rgba(230,220,255,0.7)');
+    dg.addColorStop(0.65,'rgba(180,160,240,0.35)');
+    dg.addColorStop(1,'rgba(140,120,210,0.15)');
+    g.beginPath();g.arc(cx,cy,cr,0,Math.PI*2);
+    g.fillStyle=dg;g.fill();
+    g.strokeStyle='rgba(255,255,255,0.55)';g.lineWidth=1.5;g.stroke();
+    /* stamen dots */
+    for(let i=0;i<7;i++){
+      const a=(i/7)*Math.PI*2+t*0.4;
+      const sr=cr*0.52,dr=2.5+Math.sin(t*1.2+i)*0.5;
+      const sx2=cx+Math.cos(a)*sr,sy2=cy+Math.sin(a)*sr;
+      g.beginPath();g.arc(sx2,sy2,dr,0,Math.PI*2);
+      g.fillStyle='rgba(255,240,200,0.9)';g.fill();
+    }
+    /* center gem */
+    g.beginPath();g.arc(cx,cy,5,0,Math.PI*2);
+    g.fillStyle='rgba(255,255,255,1)';g.fill();
+  }
+
+  const PETALS=8,PLEN=105;
+  const droplets=[
+    {bx:-38,by:-52,r:5.5,sp:0.7,range:14,phase:0},
+    {bx:55,by:-80,r:4,sp:1.1,range:10,phase:1.8},
+    {bx:72,by:20,r:6,sp:0.55,range:18,phase:3.2},
+    {bx:-62,by:35,r:4.5,sp:0.9,range:12,phase:5.1},
+    {bx:10,by:-100,r:3.5,sp:1.3,range:8,phase:2.4},
+    {bx:-80,by:-18,r:5,sp:0.65,range:15,phase:4.0},
+  ];
+
+  function frame(){
+    t+=0.016;
+    g.clearRect(0,0,W,H);
+
+    const breath=Math.sin(t*0.9)*3;
+
+    /* stem & leaves */
+    drawStem(breath);
+    drawLeaf(cx-4,cy+80,-Math.PI/6,breath);
+    drawLeaf(cx+4,cy+130,Math.PI/5+Math.PI,breath);
+
+    /* back petals (dark, thin) */
+    for(let i=0;i<PETALS;i++){
+      const ang=(i/PETALS)*Math.PI*2+(Math.PI/PETALS*0.5);
+      drawPetal(ang,PLEN*0.88,t*0.3+i*0.8,breath*0.6);
+    }
+    /* front petals */
+    for(let i=0;i<PETALS;i++){
+      const ang=(i/PETALS)*Math.PI*2;
+      drawPetal(ang,PLEN,t*0.25+i*0.9,breath);
+    }
+
+    drawCenter(breath);
+
+    /* floating droplets */
+    droplets.forEach(d=>{
+      const dy2=Math.sin(t*d.sp+d.phase)*d.range;
+      const dx2=Math.cos(t*d.sp*0.7+d.phase)*d.range*0.4;
+      drawDroplet(cx+d.bx+dx2, cy+d.by+dy2, d.r, 0.82);
+    });
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
 </script>
 </body>
 </html>
