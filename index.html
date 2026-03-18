@@ -265,7 +265,10 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .btn-dark{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:#08081A;color:#fff;font-size:14px;font-weight:600;border-radius:100px;text-decoration:none;cursor:none;transition:all .25s;font-family:'Inter',sans-serif}
 .btn-dark:hover{background:#1a1a3a;transform:translateY(-1px);box-shadow:0 8px 28px rgba(8,8,26,.2)}
 .flower-visual{display:flex;align-items:center;justify-content:center}
-#fc{display:block;width:100%;max-width:440px}
+.flower-img-wrap{position:relative;width:100%;max-width:480px}
+.flower-img{display:block;width:100%;border-radius:32px;box-shadow:0 40px 120px rgba(100,140,200,.22),0 8px 32px rgba(100,140,200,.12);transition:transform .6s ease}
+.flower-img:hover{transform:scale(1.03) translateY(-6px)}
+.flower-img-glow{position:absolute;inset:-20px;border-radius:48px;background:radial-gradient(ellipse at 50% 40%,rgba(180,210,255,.35),transparent 70%);pointer-events:none;z-index:-1;filter:blur(20px)}
 @media(max-width:900px){.flower-sec{grid-template-columns:1fr;padding:80px 24px;gap:40px}.flower-txt{max-width:100%}}
 
 /* ─── REVEAL ─── */
@@ -368,7 +371,10 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <a class="btn-dark" href="#contact">Work with us →</a>
   </div>
   <div class="flower-visual rv rv1">
-    <canvas id="fc"></canvas>
+    <div class="flower-img-wrap">
+      <img src="flower.jpg" alt="Crystal glass flower" class="flower-img">
+      <div class="flower-img-glow"></div>
+    </div>
   </div>
 </section>
 
