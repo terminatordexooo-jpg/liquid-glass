@@ -383,6 +383,16 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
   </div>
 </div>
 
+<!-- SCROLL VIDEO -->
+<section class="scroll-vid-sec" id="scroll-video">
+  <div class="scroll-vid-sticky">
+    <video id="scroll-vid" src="scroll.mp4" muted playsinline preload="auto"></video>
+    <div class="scroll-vid-overlay">
+      <div class="scroll-vid-label rv">Смотри как это работает</div>
+    </div>
+  </div>
+</section>
+
 <!-- GLASS FLOWER -->
 <section class="flower-sec">
   <div class="flower-txt rv-left">
@@ -395,16 +405,6 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <div class="flower-img-wrap">
       <img src="flower.jpg" alt="Crystal glass flower" class="flower-img">
       <div class="flower-img-glow"></div>
-    </div>
-  </div>
-</section>
-
-<!-- SCROLL VIDEO -->
-<section class="scroll-vid-sec" id="scroll-video">
-  <div class="scroll-vid-sticky">
-    <video id="scroll-vid" src="scroll.mp4" muted playsinline preload="auto"></video>
-    <div class="scroll-vid-overlay">
-      <div class="scroll-vid-label rv">Смотри как это работает</div>
     </div>
   </div>
 </section>
@@ -665,18 +665,26 @@ const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{trans
   const vid=document.getElementById('scroll-vid');
   if(!vid)return;
   vid.pause();
-  vid.addEventListener('loadedmetadata',()=>{
+
+  function initScrollVideo(){
+    if(!vid.duration)return;
     ScrollTrigger.create({
       trigger:'#scroll-video',
       start:'top top',
       end:'bottom bottom',
-      scrub:true,
-      onUpdate:self=>{
+      scrub:0.5,
+      onUpdate:function(self){
         const t=self.progress*vid.duration;
-        if(isFinite(t))vid.currentTime=t;
+        if(isFinite(t)&&t>=0)vid.currentTime=t;
       }
     });
-  });
+  }
+
+  if(vid.readyState>=1){
+    initScrollVideo();
+  } else {
+    vid.addEventListener('loadedmetadata', initScrollVideo);
+  }
 })();
 
 // ─── SCROLL PROGRESS BAR ─────────────────────────────────────────────────────
