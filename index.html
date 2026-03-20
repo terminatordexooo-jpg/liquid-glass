@@ -271,6 +271,13 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .flower-img-glow{position:absolute;inset:-20px;border-radius:48px;background:radial-gradient(ellipse at 50% 40%,rgba(180,210,255,.35),transparent 70%);pointer-events:none;z-index:-1;filter:blur(20px)}
 @media(max-width:900px){.flower-sec{grid-template-columns:1fr;padding:80px 24px;gap:40px}.flower-txt{max-width:100%}}
 
+/* ─── SCROLL VIDEO ─── */
+.scroll-vid-sec{height:400vh;position:relative;z-index:2}
+.scroll-vid-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
+#scroll-vid{width:100%;height:100%;object-fit:cover;display:block}
+.scroll-vid-overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:60px;background:linear-gradient(0deg,rgba(7,7,15,.7) 0%,transparent 40%)}
+.scroll-vid-label{font-family:'Syne',sans-serif;font-size:clamp(14px,2vw,20px);font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.55)}
+
 /* ─── SCROLL PROGRESS ─── */
 #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;pointer-events:none;background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));box-shadow:0 0 8px rgba(167,139,250,.6);transition:width .1s linear}
 
@@ -388,6 +395,16 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <div class="flower-img-wrap">
       <img src="flower.jpg" alt="Crystal glass flower" class="flower-img">
       <div class="flower-img-glow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLL VIDEO -->
+<section class="scroll-vid-sec" id="scroll-video">
+  <div class="scroll-vid-sticky">
+    <video id="scroll-vid" src="scroll.mp4" muted playsinline preload="auto"></video>
+    <div class="scroll-vid-overlay">
+      <div class="scroll-vid-label rv">Смотри как это работает</div>
     </div>
   </div>
 </section>
@@ -642,6 +659,25 @@ document.querySelectorAll('.btn-grad,.n-cta').forEach(b=>{
   });
 });
 const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{transform:scale(100);opacity:0}}';document.head.appendChild(ss);
+
+// ─── SCROLL VIDEO ────────────────────────────────────────────────────────────
+(function(){
+  const vid=document.getElementById('scroll-vid');
+  if(!vid)return;
+  vid.pause();
+  vid.addEventListener('loadedmetadata',()=>{
+    ScrollTrigger.create({
+      trigger:'#scroll-video',
+      start:'top top',
+      end:'bottom bottom',
+      scrub:true,
+      onUpdate:self=>{
+        const t=self.progress*vid.duration;
+        if(isFinite(t))vid.currentTime=t;
+      }
+    });
+  });
+})();
 
 // ─── SCROLL PROGRESS BAR ─────────────────────────────────────────────────────
 const progressBar=document.getElementById('scroll-progress');
