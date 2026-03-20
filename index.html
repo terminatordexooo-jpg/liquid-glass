@@ -683,36 +683,28 @@ const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{trans
   if(!vid)return;
   vid.pause();
 
-  let targetTime=0, rafId=null;
-
-  function smoothUpdate(){
-    const diff=targetTime-vid.currentTime;
-    if(Math.abs(diff)>0.01){
-      vid.currentTime+=diff*0.18; // lerp для плавности
-    }
-    if(progBar) progBar.style.width=(vid.duration?vid.currentTime/vid.duration*100:0)+'%';
-    rafId=requestAnimationFrame(smoothUpdate);
+  function seek(t){
+    if(!isFinite(t)||t<0)return;
+    // fastSeek — ближайший keyframe, быстрее чем currentTime
+    if(vid.fastSeek) vid.fastSeek(t);
+    else vid.currentTime=t;
+    if(progBar) progBar.style.width=(t/vid.duration*100)+'%';
   }
 
   function initScrollVideo(){
     if(!vid.duration)return;
-    smoothUpdate();
     ScrollTrigger.create({
       trigger:'#scroll-video',
       start:'top top',
       end:'bottom bottom',
-      scrub:false,
       onUpdate:function(self){
-        targetTime=self.progress*vid.duration;
+        seek(self.progress*vid.duration);
       }
     });
   }
 
-  if(vid.readyState>=1){
-    initScrollVideo();
-  } else {
-    vid.addEventListener('loadedmetadata', initScrollVideo);
-  }
+  if(vid.readyState>=1) initScrollVideo();
+  else vid.addEventListener('loadedmetadata', initScrollVideo);
 })();
 
 // ─── SCROLL PROGRESS BAR ─────────────────────────────────────────────────────
