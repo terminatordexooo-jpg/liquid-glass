@@ -271,10 +271,22 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .flower-img-glow{position:absolute;inset:-20px;border-radius:48px;background:radial-gradient(ellipse at 50% 40%,rgba(180,210,255,.35),transparent 70%);pointer-events:none;z-index:-1;filter:blur(20px)}
 @media(max-width:900px){.flower-sec{grid-template-columns:1fr;padding:80px 24px;gap:40px}.flower-txt{max-width:100%}}
 
+/* ─── SCROLL PROGRESS ─── */
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;pointer-events:none;background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));box-shadow:0 0 8px rgba(167,139,250,.6);transition:width .1s linear}
+
 /* ─── REVEAL ─── */
 .rv{opacity:0;transform:translateY(40px);transition:opacity .85s cubic-bezier(.23,1,.32,1),transform .85s cubic-bezier(.23,1,.32,1)}
 .rv.in{opacity:1;transform:none}
 .rv1{transition-delay:.1s}.rv2{transition-delay:.2s}.rv3{transition-delay:.3s}
+
+/* slide from sides */
+.rv-left{opacity:0;transform:translateX(-60px);transition:opacity .9s cubic-bezier(.23,1,.32,1),transform .9s cubic-bezier(.23,1,.32,1)}
+.rv-left.in{opacity:1;transform:none}
+.rv-right{opacity:0;transform:translateX(60px);transition:opacity .9s cubic-bezier(.23,1,.32,1),transform .9s cubic-bezier(.23,1,.32,1)}
+.rv-right.in{opacity:1;transform:none}
+/* scale reveal */
+.rv-scale{opacity:0;transform:scale(.88);transition:opacity .8s cubic-bezier(.23,1,.32,1),transform .8s cubic-bezier(.23,1,.32,1)}
+.rv-scale.in{opacity:1;transform:scale(1)}
 
 /* initial hide */
 .hero-badge,.hero-sub,.hero-btns,.hero-stats{opacity:0}
@@ -295,6 +307,9 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 </style>
 </head>
 <body>
+
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
 
 <!-- Cursor -->
 <div id="cur"><div id="cur-dot"></div><div id="cur-ring"></div></div>
@@ -363,13 +378,13 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 
 <!-- GLASS FLOWER -->
 <section class="flower-sec">
-  <div class="flower-txt rv">
+  <div class="flower-txt rv-left">
     <div class="s-ey" style="color:#5b21b6">Новый подход</div>
     <h2 class="flower-h">Один человек.<br><em>12 специалистов.</em></h2>
     <p class="flower-p">$20/мес на подписки вместо $5000 на команду. Лендинг за 2 часа голосом. Контент-план на месяц за 30 минут. Полная автономия — 10 проектов одновременно.</p>
     <a class="btn-dark" href="#contact">Записаться →</a>
   </div>
-  <div class="flower-visual rv rv1">
+  <div class="flower-visual rv-right">
     <div class="flower-img-wrap">
       <img src="flower.jpg" alt="Crystal glass flower" class="flower-img">
       <div class="flower-img-glow"></div>
@@ -423,7 +438,7 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     </div>
     <p class="serv-right">За 6 недель собери работающую AI-систему маркетинга. От исследования рынка до автоматических воронок и первого клиента.</p>
   </div>
-  <div class="serv-grid rv">
+  <div class="serv-grid" id="serv-grid">
     <div class="serv-item">
       <div class="si-icon si-i1">🔬</div>
       <div class="si-num">01</div>
@@ -469,7 +484,7 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <div class="s-ey">Об авторе</div>
     <h2 class="s-h">Влад Яско — <em>14 лет</em> в маркетинге.</h2>
   </div>
-  <div class="proc-grid rv">
+  <div class="proc-grid" id="proc-grid">
     <div class="proc-step"><div class="ps-n">$120K</div><div class="ps-title">Личный запуск через AI</div><div class="ps-desc">Провёл запуск на $120 000 используя именно те методы, которым учит на воркшопе.</div></div>
     <div class="proc-step"><div class="ps-n">14 лет</div><div class="ps-title">Опыт в маркетинге</div><div class="ps-desc">Пик дохода $20–50К/мес. Прошёл выгорание и финансовый кризис. Не на пьедестале — в окопах.</div></div>
     <div class="proc-step"><div class="ps-n">3 метода</div><div class="ps-title">Авторские методологии</div><div class="ps-desc">Создатель Deep Research, Client DNA и Vibe-Coding. Не учу маркетингу — даю инструменты, которые делают маркетинг за тебя.</div></div>
@@ -483,7 +498,7 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
     <div class="s-ey">Отзывы участников</div>
     <h2 class="s-h">Что говорят <em>участники.</em></h2>
   </div>
-  <div class="test-grid">
+  <div class="test-grid" id="test-grid">
     <div class="test-card rv rv1">
       <div class="test-stars">★★★★★</div>
       <p class="test-text">"За 6 недель я собрала полноценную AI-систему с нуля. Лендинг, воронку, контент-план. Раньше на это уходило 3 месяца и $3К на подрядчиков."</p>
@@ -504,7 +519,7 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 
 <!-- CTA -->
 <section class="cta-section" id="contact">
-  <div class="cta-card rv">
+  <div class="cta-card rv-scale">
     <div class="cta-blob"></div>
     <div class="cta-blob2"></div>
     <div style="position:relative;z-index:2">
@@ -627,6 +642,72 @@ document.querySelectorAll('.btn-grad,.n-cta').forEach(b=>{
   });
 });
 const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{transform:scale(100);opacity:0}}';document.head.appendChild(ss);
+
+// ─── SCROLL PROGRESS BAR ─────────────────────────────────────────────────────
+const progressBar=document.getElementById('scroll-progress');
+window.addEventListener('scroll',()=>{
+  const pct=(scrollY/(document.documentElement.scrollHeight-innerHeight))*100;
+  progressBar.style.width=pct+'%';
+},{ passive:true });
+
+// ─── ENHANCED SCROLL REVEALS ─────────────────────────────────────────────────
+// Side reveals
+gsap.utils.toArray('.rv-left,.rv-right,.rv-scale').forEach(el=>{
+  ScrollTrigger.create({trigger:el,start:'top 88%',onEnter:()=>el.classList.add('in')});
+});
+
+// Staggered services grid
+ScrollTrigger.create({
+  trigger:'#serv-grid',start:'top 82%',once:true,
+  onEnter:()=>{
+    gsap.fromTo('#serv-grid .serv-item',
+      {opacity:0,y:50,scale:.96},
+      {opacity:1,y:0,scale:1,duration:.7,stagger:.08,ease:'power3.out'});
+  }
+});
+
+// Staggered process steps — slide from bottom with alternating direction
+ScrollTrigger.create({
+  trigger:'#proc-grid',start:'top 82%',once:true,
+  onEnter:()=>{
+    gsap.fromTo('#proc-grid .proc-step',
+      {opacity:0,x:(i)=>i%2===0?-40:40,y:20},
+      {opacity:1,x:0,y:0,duration:.75,stagger:.1,ease:'power3.out'});
+  }
+});
+
+// Staggered testimonials
+ScrollTrigger.create({
+  trigger:'#test-grid',start:'top 85%',once:true,
+  onEnter:()=>{
+    gsap.fromTo('#test-grid .test-card',
+      {opacity:0,y:60,rotationX:8},
+      {opacity:1,y:0,rotationX:0,duration:.8,stagger:.12,ease:'power3.out',
+       transformPerspective:800});
+  }
+});
+
+// Work cards already have .rv classes — enhance with GSAP stagger too
+ScrollTrigger.create({
+  trigger:'.work-grid',start:'top 82%',once:true,
+  onEnter:()=>{
+    gsap.fromTo('.work-card',
+      {opacity:0,y:70,scale:.95},
+      {opacity:1,y:0,scale:1,duration:.85,stagger:.12,ease:'power3.out'});
+  }
+});
+
+// Flower image parallax on scroll
+gsap.to('.flower-img',{
+  yPercent:-12,ease:'none',
+  scrollTrigger:{trigger:'.flower-sec',start:'top bottom',end:'bottom top',scrub:1.5}
+});
+
+// Section headings slight Y shift on scroll (subtle parallax)
+gsap.utils.toArray('.s-h').forEach(h=>{
+  gsap.fromTo(h,{y:20},{y:-10,ease:'none',
+    scrollTrigger:{trigger:h,start:'top 90%',end:'bottom 20%',scrub:2}});
+});
 
 // ─── HERO PARALLAX ───────────────────────────────────────────────────────────
 document.addEventListener('mousemove',e=>{
