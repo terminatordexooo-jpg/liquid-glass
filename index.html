@@ -339,6 +339,206 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;o
 /* initial hide */
 .hero-badge,.hero-sub,.hero-btns,.hero-stats{opacity:0}
 
+/* ══════════════════════════════════════════
+   PREMIUM $5000 UPGRADES
+══════════════════════════════════════════ */
+
+/* Better badge */
+.hero-badge{
+  background:linear-gradient(135deg,rgba(167,139,250,.15),rgba(96,165,250,.1));
+  border:1px solid rgba(167,139,250,.35);
+  padding:8px 20px 8px 10px;
+  font-size:13px;font-weight:500;
+  letter-spacing:.3px;
+  box-shadow:0 0 30px rgba(167,139,250,.12);
+}
+
+/* Hero title bigger & sharper */
+.hero h1{
+  font-size:clamp(68px,9vw,130px);
+  letter-spacing:-5px;
+  line-height:.88;
+  margin-bottom:32px;
+}
+.grad-text{
+  background:linear-gradient(135deg,#c4b5fd 0%,#93c5fd 40%,#f9a8d4 80%,#c4b5fd 100%);
+  background-size:300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gshift 8s ease infinite;
+}
+
+/* Hero beam */
+.hero::before{
+  content:'';
+  position:absolute;
+  top:-200px;left:50%;
+  transform:translateX(-50%);
+  width:1px;height:700px;
+  background:linear-gradient(180deg,transparent,rgba(167,139,250,.6) 40%,rgba(167,139,250,.2) 70%,transparent);
+  pointer-events:none;
+}
+
+/* Stats upgrade */
+.hero-stats{
+  gap:64px;
+  margin-top:100px;
+  padding-top:56px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.hs-num{
+  font-size:44px;
+  letter-spacing:-3px;
+  background:linear-gradient(135deg,#fff,#c4b5fd);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hs-label{font-size:12px;letter-spacing:.5px;color:rgba(255,255,255,.35)}
+
+/* Ticker upgrade */
+.ticker{
+  border:none;
+  background:linear-gradient(90deg,rgba(7,7,15,0),rgba(167,139,250,.04) 50%,rgba(7,7,15,0));
+  border-top:1px solid rgba(167,139,250,.1);
+  border-bottom:1px solid rgba(167,139,250,.1);
+}
+.ti{color:rgba(255,255,255,.2);font-size:11px;letter-spacing:3px}
+.ti-star{color:var(--v1);opacity:.7}
+
+/* Section headers */
+.s-ey{
+  font-size:10px;letter-spacing:5px;
+  background:linear-gradient(90deg,var(--v1),var(--v2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.s-ey::before{background:linear-gradient(90deg,var(--v1),var(--v2))}
+.s-h{letter-spacing:-3px;line-height:.92}
+
+/* Work cards upgrade */
+.work-card{border-radius:28px}
+.work-card:hover{transform:translateY(-10px) scale(1.01);box-shadow:0 40px 100px rgba(0,0,0,.4),0 0 0 1px rgba(167,139,250,.2)}
+.wc-tag{font-size:10px;letter-spacing:2.5px}
+.wc-title{font-size:26px;letter-spacing:-1px}
+
+/* Services upgrade */
+.serv-grid{gap:1px;border-radius:28px;background:rgba(255,255,255,.04)}
+.serv-item{
+  padding:48px 44px;
+  transition:all .4s cubic-bezier(.23,1,.32,1);
+  position:relative;
+  overflow:hidden;
+}
+.serv-item::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,.2),transparent);
+  opacity:0;
+  transition:opacity .3s;
+}
+.serv-item:hover{background:rgba(167,139,250,.05)}
+.serv-item:hover::before{opacity:1}
+.si-icon{width:52px;height:52px;border-radius:16px;font-size:24px}
+.si-num{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.15);margin-bottom:14px}
+.si-title{font-size:22px;letter-spacing:-.5px;margin-bottom:12px}
+
+/* Process upgrade */
+.proc-step{padding:52px 40px;position:relative;overflow:hidden}
+.proc-step::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--v1),var(--v2));
+  transform:scaleX(0);
+  transition:transform .4s cubic-bezier(.23,1,.32,1);
+  transform-origin:left;
+}
+.proc-step:hover::after{transform:scaleX(1)}
+.ps-n{font-size:52px;letter-spacing:-4px;color:rgba(255,255,255,.04)}
+.ps-title{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:10px}
+
+/* Testimonials upgrade */
+.test-card{
+  border-radius:28px;
+  padding:40px 36px;
+  position:relative;
+  overflow:hidden;
+}
+.test-card::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:28px;
+  background:linear-gradient(135deg,rgba(167,139,250,.06),transparent 60%);
+  pointer-events:none;
+}
+.test-card:hover{
+  border-color:rgba(167,139,250,.25);
+  box-shadow:0 0 60px rgba(167,139,250,.06);
+}
+.test-stars{color:var(--v1);font-size:12px;letter-spacing:3px;margin-bottom:22px}
+.test-text{font-size:16px;line-height:1.75;color:rgba(255,255,255,.65)}
+.test-ava{width:44px;height:44px;border-radius:50%;font-size:17px;box-shadow:0 0 0 2px rgba(167,139,250,.3)}
+.test-name{font-size:15px;font-weight:600;letter-spacing:-.2px}
+
+/* CTA upgrade */
+.cta-card{
+  border-radius:40px;
+  padding:120px 100px;
+  background:linear-gradient(135deg,rgba(139,92,246,.12) 0%,rgba(96,165,250,.08) 50%,rgba(244,114,182,.1) 100%);
+  border:1px solid rgba(167,139,250,.15);
+  position:relative;
+  overflow:hidden;
+}
+.cta-card::before{
+  content:'';
+  position:absolute;
+  top:-1px;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,.6),transparent);
+}
+.cta-h{font-size:clamp(44px,6vw,90px);letter-spacing:-4px;line-height:.92}
+.cta-sub{font-size:17px;line-height:1.7;color:rgba(255,255,255,.45);max-width:480px}
+
+/* Footer upgrade */
+footer{
+  padding:56px 72px;
+  background:rgba(255,255,255,.01);
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.f-logo{font-size:18px;letter-spacing:-.3px}
+.f-copy{font-size:12px;color:rgba(255,255,255,.18)}
+
+/* Nav upgrade */
+.n-logo{font-size:17px;letter-spacing:-.5px}
+.n-links a{font-size:13px;letter-spacing:.2px}
+nav{padding:20px 56px}
+
+/* Buttons upgrade */
+.btn-grad{
+  padding:16px 34px;
+  font-size:15px;
+  letter-spacing:-.1px;
+  box-shadow:0 0 0 1px rgba(167,139,250,.3);
+}
+.btn-grad:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 48px rgba(167,139,250,.4),0 0 0 1px rgba(167,139,250,.4);
+}
+.btn-glass{
+  padding:16px 34px;
+  font-size:15px;
+  backdrop-filter:blur(20px);
+}
+
+/* Flower section upgrade */
+.flower-sec{
+  background:linear-gradient(145deg,#E8E4F4 0%,#EEF0FA 40%,#E4EBF5 100%);
+}
+.flower-h{letter-spacing:-4px;line-height:.9}
+.flower-img{border-radius:36px;box-shadow:0 60px 150px rgba(80,100,200,.18),0 8px 40px rgba(80,100,200,.1)}
+
 /* ─── RESPONSIVE ─── */
 @media(max-width:1000px){
   nav{padding:20px 24px}.n-links{display:none}
