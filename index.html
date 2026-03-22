@@ -699,16 +699,17 @@ const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{trans
   }
 
   function initScrollAnim(){
-    ScrollTrigger.refresh();
-    ScrollTrigger.create({
-      trigger:'#scroll-video',
-      start:'top top',
-      end:'bottom bottom',
-      onUpdate:function(self){
-        const idx=Math.round(self.progress*(TOTAL-1));
-        drawFrame(idx);
-      }
-    });
+    const section=document.getElementById('scroll-video');
+    function onScroll(){
+      const rect=section.getBoundingClientRect();
+      const totalH=section.offsetHeight-window.innerHeight;
+      const progress=Math.max(0,Math.min(1,-rect.top/totalH));
+      const idx=Math.round(progress*(TOTAL-1));
+      drawFrame(idx);
+      if(progBar)progBar.style.width=(progress*100)+'%';
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    onScroll();
   }
 })();
 
