@@ -389,6 +389,22 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 
 <!-- SCROLL VIDEO -->
 
+<section class="scroll-vid-sec" id="scroll-video">
+  <div class="scroll-vid-sticky">
+    <div class="scroll-vid-txt">
+      <div class="scroll-vid-eyebrow">Как это работает</div>
+      <h2 class="scroll-vid-h">AI-система,<br>которая работает<br><em>за тебя.</em></h2>
+      <p class="scroll-vid-p">Один инструмент заменяет команду из 12 человек. Смотри как строится система маркетинга — от исследования до первых продаж.</p>
+      <a class="btn-grad" href="#contact" style="font-size:14px;padding:12px 26px">Записаться на воркшоп →</a>
+      <div class="scroll-vid-progress"><div class="scroll-vid-progress-bar" id="vid-prog"></div></div>
+    </div>
+    <div class="scroll-vid-wrap">
+      <canvas id="scroll-canvas"></canvas>
+      <div class="scroll-vid-overlay"></div>
+    </div>
+  </div>
+</section>
+
 <!-- GLASS FLOWER -->
 <section class="flower-sec">
   <div class="flower-txt rv-left">
@@ -683,16 +699,16 @@ const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{trans
   }
 
   function initScrollAnim(){
-    window.addEventListener('scroll',function(){
-      const section=document.getElementById('scroll-video');
-      if(!section)return;
-      const rect=section.getBoundingClientRect();
-      const sectionH=section.offsetHeight-window.innerHeight;
-      const progress=Math.max(0,Math.min(1,-rect.top/sectionH));
-      const idx=Math.round(progress*(TOTAL-1));
-      drawFrame(idx);
-      if(progBar)progBar.style.width=(progress*100)+'%';
-    },{passive:true});
+    ScrollTrigger.refresh();
+    ScrollTrigger.create({
+      trigger:'#scroll-video',
+      start:'top top',
+      end:'bottom bottom',
+      onUpdate:function(self){
+        const idx=Math.round(self.progress*(TOTAL-1));
+        drawFrame(idx);
+      }
+    });
   }
 })();
 
