@@ -399,7 +399,7 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
       <div class="scroll-vid-progress"><div class="scroll-vid-progress-bar" id="vid-prog"></div></div>
     </div>
     <div class="scroll-vid-wrap">
-      <video id="scroll-canvas" muted playsinline preload="auto" src="scroll.mp4" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:24px;position:absolute;inset:0"></video>
+      <canvas id="scroll-canvas" style="width:100%;height:100%;display:block;position:absolute;inset:0"></canvas>
       <div class="scroll-vid-overlay"></div>
     </div>
   </div>
@@ -659,24 +659,63 @@ document.querySelectorAll('.btn-grad,.n-cta').forEach(b=>{
 });
 const ss=document.createElement('style');ss.textContent='@keyframes rpl{to{transform:scale(100);opacity:0}}';document.head.appendChild(ss);
 
-// ─── SCROLL VIDEO ─────────────────────────────────────────────────────────────
+// ─── SCROLL CANVAS FRAMES ─────────────────────────────────────────────────────
 (function(){
-  const vid=document.getElementById('scroll-canvas');
+  const canvas=document.getElementById('scroll-canvas');
   const progBar=document.getElementById('vid-prog');
-  if(!vid)return;
-  vid.pause();
-  vid.addEventListener('loadedmetadata',function(){
-    const section=document.getElementById('scroll-video');
-    function onScroll(){
-      const rect=section.getBoundingClientRect();
-      const totalH=section.offsetHeight-window.innerHeight;
-      const progress=Math.max(0,Math.min(1,-rect.top/totalH));
-      vid.currentTime=progress*vid.duration;
-      if(progBar)progBar.style.width=(progress*100)+'%';
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const TOTAL=121;
+  const frames=new Array(TOTAL);
+  let loadedCount=0;
+  let currentIdx=0;
+  let rafId=null;
+  let targetIdx=0;
+
+  canvas.width=640; canvas.height=640;
+
+  function drawFrame(idx){
+    idx=Math.max(0,Math.min(TOTAL-1,idx));
+    if(frames[idx] && frames[idx].complete && frames[idx].naturalWidth){
+      ctx.drawImage(frames[idx],0,0,640,640);
+      currentIdx=idx;
+      if(progBar)progBar.style.width=(idx/(TOTAL-1)*100)+'%';
     }
-    window.addEventListener('scroll',onScroll,{passive:true});
-    onScroll();
-  });
+  }
+
+  // Smooth interpolation loop
+  function animLoop(){
+    if(currentIdx!==targetIdx){
+      const step=Math.ceil(Math.abs(targetIdx-currentIdx)*0.3)||1;
+      currentIdx+=(targetIdx>currentIdx?step:-step);
+      if(Math.abs(currentIdx-targetIdx)<=step)currentIdx=targetIdx;
+      drawFrame(currentIdx);
+    }
+    rafId=requestAnimationFrame(animLoop);
+  }
+  animLoop();
+
+  // Preload frames — prioritize first 10 for fast start
+  function loadFrame(i){
+    const img=new Image();
+    img.src='frames/'+String(i).padStart(4,'0')+'.jpg';
+    img.onload=function(){
+      frames[i-1]=img;
+      loadedCount++;
+      if(i===1)drawFrame(0);
+    };
+    frames[i-1]=img;
+  }
+  for(let i=1;i<=10;i++)loadFrame(i);
+  setTimeout(()=>{for(let i=11;i<=TOTAL;i++)loadFrame(i);},200);
+
+  const section=document.getElementById('scroll-video');
+  window.addEventListener('scroll',function(){
+    const rect=section.getBoundingClientRect();
+    const totalH=section.offsetHeight-window.innerHeight;
+    const progress=Math.max(0,Math.min(1,-rect.top/totalH));
+    targetIdx=Math.round(progress*(TOTAL-1));
+  },{passive:true});
 })();
 
 // ─── SCROLL PROGRESS BAR ─────────────────────────────────────────────────────
