@@ -248,9 +248,19 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .f-copy{font-size:13px;color:rgba(255,255,255,.22)}
 
 /* ─── GLASS CARDS ─── */
-.glass-card{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(16px);padding:32px;transition:all .3s;position:relative;overflow:hidden}
-.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
-.glass-card:hover{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.07);transform:translateY(-4px)}
+.glass-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:24px;backdrop-filter:blur(20px);padding:36px;transition:all .4s cubic-bezier(.23,1,.32,1);position:relative;overflow:hidden}
+.glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)}
+.glass-card::after{content:'';position:absolute;inset:0;border-radius:24px;background:radial-gradient(circle at 50% 0%,rgba(167,139,250,.06),transparent 60%);pointer-events:none}
+.glass-card:hover{border-color:rgba(167,139,250,.3);background:rgba(255,255,255,.07);transform:translateY(-6px);box-shadow:0 20px 60px rgba(167,139,250,.12)}
+
+/* ─── PREMIUM SECTION GLOW ─── */
+.section::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(167,139,250,.04) 0%,transparent 70%);pointer-events:none}
+
+/* ─── PREMIUM NAV ─── */
+nav.solid{background:rgba(7,7,15,.7);backdrop-filter:blur(40px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.06)}
+
+/* ─── HERO SPOTLIGHT ─── */
+.hero::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse at 50% 0%,rgba(167,139,250,.12) 0%,transparent 70%);pointer-events:none}
 
 /* ─── GLASS FLOWER SECTION ─── */
 .flower-sec{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;align-items:center;background:linear-gradient(145deg,#E2DFEE 0%,#E8EAF6 40%,#DDE4EF 100%);padding:100px 56px;gap:60px;position:relative;z-index:2;overflow:hidden}
@@ -267,10 +277,14 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .flower-img-glow{position:absolute;inset:-20px;border-radius:48px;background:radial-gradient(ellipse at 50% 40%,rgba(180,210,255,.35),transparent 70%);pointer-events:none;z-index:-1;filter:blur(20px)}
 @media(max-width:900px){.flower-sec{grid-template-columns:1fr;padding:80px 24px;gap:40px}.flower-txt{max-width:100%}}
 
+/* ─── GRAIN TEXTURE ─── */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
 /* ─── SCROLL VIDEO ─── */
 .scroll-vid-sec{height:500vh;position:relative;z-index:2}
-.scroll-vid-sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px;padding:0 72px;background:var(--bg)}
-.scroll-vid-txt{max-width:480px}
+.scroll-vid-sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:80px;padding:0 80px;background:var(--bg);overflow:hidden}
+.scroll-vid-sticky::before{content:'';position:absolute;right:25%;top:50%;transform:translate(50%,-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.12) 0%,transparent 70%);pointer-events:none;filter:blur(40px)}
+.scroll-vid-txt{max-width:480px;position:relative;z-index:2}
 .scroll-vid-eyebrow{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--v1);margin-bottom:20px;display:flex;align-items:center;gap:12px}
 .scroll-vid-eyebrow::before{content:'';width:24px;height:1px;background:var(--v1);display:block}
 .scroll-vid-h{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(36px,4vw,60px);letter-spacing:-2px;line-height:.97;margin-bottom:20px}
@@ -278,10 +292,32 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
 .scroll-vid-p{font-size:16px;color:var(--gray);line-height:1.7;margin-bottom:32px}
 .scroll-vid-progress{width:100%;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:40px}
 .scroll-vid-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--v1),var(--v2));border-radius:2px;transition:width .05s linear}
-.scroll-vid-wrap{width:100%;max-width:520px;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px var(--border);position:relative;aspect-ratio:9/16}
-#scroll-canvas{width:100%;display:block;border-radius:20px}
-.scroll-vid-overlay{position:absolute;inset:0;border-radius:20px;pointer-events:none;background:linear-gradient(180deg,transparent 70%,rgba(7,7,15,.4) 100%)}
-@media(max-width:1000px){.scroll-vid-sticky{grid-template-columns:1fr;padding:40px 24px;gap:32px}.scroll-vid-wrap{max-width:340px;margin:0 auto}#scroll-vid{aspect-ratio:16/9}}
+
+/* Phone mockup */
+.scroll-vid-phone{position:relative;display:flex;align-items:center;justify-content:center;z-index:2}
+.scroll-vid-phone::before{content:'';position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.18) 0%,rgba(96,165,250,.08) 50%,transparent 70%);pointer-events:none;filter:blur(30px)}
+.scroll-vid-wrap{
+  width:100%;max-width:300px;
+  border-radius:44px;
+  overflow:hidden;
+  position:relative;
+  aspect-ratio:9/16;
+  background:#000;
+  box-shadow:
+    0 0 0 10px #1a1a2e,
+    0 0 0 11px rgba(255,255,255,.08),
+    0 0 0 14px #0d0d1a,
+    0 0 0 15px rgba(255,255,255,.05),
+    0 50px 120px rgba(0,0,0,.8),
+    0 20px 60px rgba(167,139,250,.15),
+    inset 0 0 0 1px rgba(255,255,255,.08)
+}
+.scroll-vid-wrap::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:28px;background:#1a1a2e;border-radius:0 0 20px 20px;z-index:10}
+.scroll-vid-wrap::after{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:10px;height:10px;background:#0d0d1a;border-radius:50%;z-index:11;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+#scroll-canvas{width:100%;height:100%;display:block;object-fit:cover;position:absolute;inset:0}
+.scroll-vid-overlay{position:absolute;inset:0;border-radius:44px;pointer-events:none;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.5) 100%);z-index:5}
+
+@media(max-width:1000px){.scroll-vid-sticky{grid-template-columns:1fr;padding:40px 24px;gap:32px}.scroll-vid-phone{justify-content:center}.scroll-vid-wrap{max-width:240px;margin:0 auto}}
 
 /* ─── SCROLL PROGRESS ─── */
 #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:9999;pointer-events:none;background:linear-gradient(90deg,var(--v1),var(--v2),var(--v3));box-shadow:0 0 8px rgba(167,139,250,.6);transition:width .1s linear}
@@ -398,9 +434,11 @@ footer{padding:48px 56px;border-top:1px solid var(--border);display:flex;align-i
       <a class="btn-grad" href="#contact" style="font-size:14px;padding:12px 26px">Записаться на воркшоп →</a>
       <div class="scroll-vid-progress"><div class="scroll-vid-progress-bar" id="vid-prog"></div></div>
     </div>
-    <div class="scroll-vid-wrap">
-      <canvas id="scroll-canvas" style="width:100%;height:100%;display:block;position:absolute;inset:0"></canvas>
-      <div class="scroll-vid-overlay"></div>
+    <div class="scroll-vid-phone">
+      <div class="scroll-vid-wrap">
+        <canvas id="scroll-canvas" style="width:100%;height:100%;display:block;position:absolute;inset:0"></canvas>
+        <div class="scroll-vid-overlay"></div>
+      </div>
     </div>
   </div>
 </section>
